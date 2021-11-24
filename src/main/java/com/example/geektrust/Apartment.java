@@ -28,9 +28,13 @@ public class Apartment {
         guests += n;
     }
 
-    public Bill waterBill(){
+    public Costs addGuestCost() {
         int guestConsumption = guests * CONSUMPTION_PER_PERSON;
         costs.guestCost(guestConsumption);
+        return costs;
+    }
+
+    public Bill waterBill(){
         return new Bill(costs.getTotalConsumption(), costs.getTotalBill());
     }
 
@@ -44,5 +48,25 @@ public class Apartment {
             baseConsumption = NUM_PEOPLE_3BHK*CONSUMPTION_PER_PERSON;
         }
         costs = new Costs(baseConsumption, corpRatio, borewellRatio);
+    }
+
+    public int getBhk() {
+        return bhk;
+    }
+
+    public int getCorpRatio() {
+        return corpRatio;
+    }
+
+    public int getBorewellRatio() {
+        return borewellRatio;
+    }
+
+    public int getGuests() {
+        return guests;
+    }
+
+    public Costs getCosts() {
+        return costs;
     }
 }

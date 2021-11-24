@@ -7,64 +7,78 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class MainTest {
-
-    Apartment apartment;
-
     @Test
-    @DisplayName("Testing Apartment Class Directly")
-    void testcase() throws Exception {
-        apartment = new Apartment(3, 5, 4);
-        apartment.addGuest(3);
-        apartment.addGuest(5);
-        Bill bill = apartment.waterBill();
-        assertEquals(3900, bill.getConsumption());
-        assertEquals(10334, bill.getAmount());
+    @DisplayName("APARTMENT EXCEPTION TEST")
+    void shouldThrowExceptionWhen5BHKApartmentIsInititalized() throws Exception {
+        assertThrows(Exception.class, () -> new Apartment(5, 1 , 1));
     }
 
     @Test
-    @DisplayName("Testing Apartment Class Directly")
-    void testcaseTwo() throws Exception {
-        apartment = new Apartment(2, 1, 2);
-        Bill bill = apartment.waterBill();
-        assertEquals(900, bill.getConsumption());
-        assertEquals(1200, bill.getAmount());
+    @DisplayName("ALLOT_WATER TEST")
+    void allotWaterTest() throws Exception {
+        String[] command = {"ALLOT_WATER","2", "1:2"};
+        Apartment apartment = Main.allotWater(command);
+        assertEquals(2, apartment.getBhk());
+        assertEquals(1, apartment.getCorpRatio());
+        assertEquals(2, apartment.getBorewellRatio());
+        assertEquals(0, apartment.getGuests());
+        Costs costs = apartment.getCosts();
+        assertEquals(900, costs.getTotalConsumption());
+        assertEquals(1200, costs.getTotalBill());
     }
 
     @Test
-    @DisplayName("Testing Apartment Class Directly")
-    void testcaseThree() throws Exception {
-        apartment = new Apartment(2, 5, 1);
-        apartment.addGuest(7);
-        apartment.addGuest(4);
-        apartment.addGuest(4);
-        Bill bill = apartment.waterBill();
-        assertEquals(5400, bill.getConsumption());
-        assertEquals(24475, bill.getAmount());
+    @DisplayName("ALLOT_WATER EXCEPTION TEST")
+    void allotWaterShouldThrowExceptionIfCommandIsInvalid() throws Exception {
+        String[] command = {"ALLOT","2", "1:2"};
+        assertThrows(Exception.class, () -> Main.allotWater(command));
     }
 
     @Test
-    @DisplayName("Testing Apartment Class Directly")
-    void testcaseFour() throws Exception {
-        apartment = new Apartment(2, 1, 2);
-        apartment.addGuest(5);
-        Bill bill = apartment.waterBill();
-        assertEquals(2400, bill.getConsumption());
-        assertEquals(5200, bill.getAmount());
+    @DisplayName("ADD_GUESTS TEST")
+    void addGuestsTest() throws Exception {
+        String[] command = {"ALLOT_WATER","2", "1:2"};
+        Main.allotWater(command);
+        command = new String[]{"ADD_GUESTS", "2"};
+        Apartment apartment = Main.addGuests(command);
+        assertEquals(2, apartment.getGuests());
     }
 
     @Test
-    @DisplayName("Exception Testing")
-    void shouldThrowExceptionWhen5BHKApartmentIsInitialized() {
-        Throwable exception = assertThrows(Exception.class, () -> new Apartment(5, 1, 2));
-        assertEquals("Please provide valid number of rooms.", exception.getMessage());
+    @DisplayName("BILL TEST")
+    void billTest() throws Exception {
+        String[] command = {"ALLOT_WATER","2", "1:2"};
+        Main.allotWater(command);
+        command = new String[]{"ADD_GUESTS", "2"};
+        Main.addGuests(command);
+        Bill bill = Main.printBill();
+        assertEquals(2500, bill.getAmount());
+        assertEquals(1500, bill.getConsumption());
     }
 
-/*    @Test
-    @DisplayName("Testing Main Class")
-    void testmain() throws Exception {
-        String filepath = ".\\sample_input\\input1.txt";
-        int[] arr = Main.waterManagement(filepath);
-        assertEquals(3900, arr[0]);
-        assertEquals(10334, arr[1]);
-    }*/
+    @Test
+    @DisplayName("COSTS TEST")
+    void costsTest() throws Exception {
+        String[] command = {"ALLOT_WATER","2", "1:2"};
+        Main.allotWater(command);
+        command = new String[]{"ADD_GUESTS", "10"};
+        Apartment apartment = Main.addGuests(command);
+        Costs costs = apartment.addGuestCost();
+        assertEquals(12700, costs.getTotalBill());
+        assertEquals(3900, costs.getTotalConsumption());
+    }
+
+    @Test
+    @DisplayName("COSTS TEST 2")
+    void costsTest2() throws Exception {
+        String[] command = {"ALLOT_WATER","2", "1:2"};
+        Main.allotWater(command);
+        command = new String[]{"ADD_GUESTS", "15"};
+        Apartment apartment = Main.addGuests(command);
+        Costs costs = apartment.addGuestCost();
+        assertEquals(24700, costs.getTotalBill());
+        assertEquals(5400, costs.getTotalConsumption());
+    }
+
 }
+
